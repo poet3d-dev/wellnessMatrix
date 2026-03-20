@@ -9,21 +9,42 @@ type IconMapping = Record<SymbolViewProps["name"], ComponentProps<typeof Materia
 type IconSymbolName = keyof typeof MAPPING;
 
 /**
- * Add your SF Symbols to Material Icons mappings here.
- * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
- * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
+ * SF Symbols to Material Icons mappings for Wellness Matrix app.
  */
 const MAPPING = {
+  // Tab bar icons
   "house.fill": "home",
-  "paperplane.fill": "send",
-  "chevron.left.forwardslash.chevron.right": "code",
+  "book.fill": "menu-book",
+  "chart.bar.fill": "bar-chart",
+  "person.fill": "person",
+  // Navigation
+  "chevron.left": "chevron-left",
   "chevron.right": "chevron-right",
+  "chevron.left.forwardslash.chevron.right": "code",
+  "paperplane.fill": "send",
+  // Journal
+  "pencil": "edit",
+  "sun.max.fill": "wb-sunny",
+  "moon.fill": "nightlight-round",
+  "star.fill": "star",
+  // Actions
+  "checkmark.circle.fill": "check-circle",
+  "xmark.circle.fill": "cancel",
+  "arrow.right": "arrow-forward",
+  "arrow.left": "arrow-back",
+  "lock.fill": "lock",
+  "trash.fill": "delete",
+  "square.and.arrow.down": "download",
+  "gearshape.fill": "settings",
+  "bell.fill": "notifications",
+  "heart.fill": "favorite",
+  "leaf.fill": "eco",
+  "flame.fill": "local-fire-department",
+  "sparkles": "auto-awesome",
 } as IconMapping;
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
- * This ensures a consistent look across platforms, and optimal resource usage.
- * Icon `name`s are based on SF Symbols and require manual mapping to Material Icons.
  */
 export function IconSymbol({
   name,
