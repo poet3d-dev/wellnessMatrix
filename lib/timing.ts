@@ -102,3 +102,63 @@ export function getJourneyProgress(startDate: string | null | undefined): number
   const day = getJourneyDay(startDate);
   return Math.round((day / 56) * 100);
 }
+
+
+/**
+ * Calculate the current streak (consecutive days with completed journals).
+ * A day counts as "completed" if either morning or evening journal is done.
+ * @param entries Array of daily entries sorted by date (newest first)
+ * @returns Number of consecutive days with completed journals
+ */
+export function calculateStreak(entries: Array<{ entryDate: string; morningCompleted: boolean; eveningCompleted: boolean }>): number {
+  if (!entries || entries.length === 0) return 0;
+
+  // Parse date string in YYYY-MM-DD format as UTC
+  const parseDate = (dateStr: string): Date => {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d));
+  };
+
+  // Sort entries by date descending (newest first)
+  const sorted = [...entries].sort((a, b) => parseDate(b.entryDate).getTime() - parseDate(a.entryDate).getTime());
+
+  let streak = 0;
+  const today = new Date();
+  let expectedDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+
+  for (const entry of sorted) {
+    const entryDate = parseDate(entry.entryDate);
+
+    // Check if this entry matches the expected date
+    if (entryDate.getTime() !== expectedDate.getTime()) {
+      break;
+    }
+
+    // Count this day if either morning or evening is completed
+    if (entry.morningCompleted || entry.eveningCompleted) {
+      streak++;
+      expectedDate.setUTCDate(expectedDate.getUTCDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+/**
+ * Get a streak message based on the current streak count.
+ * @param streak Current streak number
+ * @returns Motivational message
+ */
+export function getStreakMessage(streak: number): string {
+  if (streak === 0) return "Start your journey today!";
+  if (streak === 1) return "Great start! Keep it going.";
+  if (streak === 3) return "3-day streak! You're on fire! 🔥";
+  if (streak === 7) return "One week! Amazing dedication! 🌟";
+  if (streak === 14) return "Two weeks! You're unstoppable! 💪";
+  if (streak === 21) return "Three weeks! Incredible! 🚀";
+  if (streak === 30) return "One month! You're a champion! 👑";
+  if (streak > 30) return `${streak} days! Legendary! 🏆`;
+  return `${streak}-day streak! Keep going!`;
+}

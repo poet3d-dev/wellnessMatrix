@@ -45,3 +45,43 @@
 - [x] App logo generated and applied
 - [x] All TypeScript errors resolved (0 errors)
 - [x] Checkpoint saved
+
+
+## Phase 9: Push Notifications & Reminders
+- [ ] Set up expo-notifications and request permissions
+- [ ] Schedule daily 7am morning journal reminder
+- [ ] Schedule daily 7pm evening journal reminder
+- [ ] Test notification delivery on device
+
+## Phase 10: Expanded Morning Journal
+- [ ] Add "5 Better Moments" multi-input to morning flow
+- [ ] Add "Most Important Thing" single-input to morning flow
+- [ ] Update database schema to store these new fields
+- [ ] Update morning journal API route to handle new fields
+- [ ] Integrate new prompts into morning journal UI
+
+## Phase 11: Streak Tracking
+- [ ] Add streak calculation logic to timing utilities
+- [ ] Calculate consecutive days with completed journals
+- [ ] Display streak counter on home screen
+- [ ] Add streak badge/visual indicator
+- [ ] Show streak in progress overview
+
+
+## Phase 9: Push Notifications & Reminders
+- [x] Set up expo-notifications and request permissions
+- [x] Schedule daily 7am morning journal reminder
+- [x] Schedule daily 7pm evening journal reminder
+- [x] Test notification delivery on device
+
+## Phase 10: Expanded Morning Journal
+- [x] Add "5 Better Moments" multi-input to morning flow
+- [x] Add "Most Important Thing" single-input to morning flow
+- [x] Update morning journal UI with new prompts
+- [x] Integrate new prompts into morning journal flow
+
+## Phase 11: Streak Tracking
+- [x] Add streak calculation logic to timing utilities
+- [x] Calculate consecutive days with completed journals
+- [x] Display streak counter on home screen
+- [x] Add streak badge/visual indicator with emoji and message

@@ -21,6 +21,8 @@ import {
   getJourneyDay,
   getJourneyWeek,
   getWeekProgress,
+  calculateStreak,
+  getStreakMessage,
 } from "@/lib/timing";
 import { WEEK_COLOR_MAP, WEEK_NAMES } from "@/shared/types";
 
@@ -41,6 +43,16 @@ export default function HomeScreen() {
   const { data: practices } = trpc.practices.list.useQuery();
   const { data: todayEntry } = trpc.journal.getEntry.useQuery({ date: today });
   const { data: progress } = trpc.progress.get.useQuery();
+  const { data: entries } = trpc.journal.listEntries.useQuery();
+
+  const streak = calculateStreak(
+    (entries ?? []).map((e) => ({
+      entryDate: typeof e.entryDate === "string" ? e.entryDate : e.entryDate.toISOString().split("T")[0],
+      morningCompleted: e.morningCompleted,
+      eveningCompleted: e.eveningCompleted,
+    }))
+  );
+  const streakMessage = getStreakMessage(streak);
 
   const [morningAvailable, setMorningAvailable] = useState(isMorningAvailable());
   const [eveningAvailable, setEveningAvailable] = useState(isEveningAvailable());
@@ -107,6 +119,18 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <Text style={[styles.greeting, { color: colors.muted }]}>{greeting},</Text>
           <Text style={[styles.name, { color: colors.foreground }]}>{firstName}</Text>
+        </View>
+
+        {/* Streak counter */}
+        <View style={[styles.streakCard, { backgroundColor: "#FFE082", borderColor: "#FBC02D" }]}>
+          <View style={styles.streakContent}>
+            <Text style={styles.streakEmoji}>🔥</Text>
+            <View style={styles.streakText}>
+              <Text style={styles.streakNumber}>{streak}</Text>
+              <Text style={styles.streakLabel}>day streak</Text>
+            </View>
+          </View>
+          <Text style={styles.streakMessage}>{streakMessage}</Text>
         </View>
 
         {/* Vision card */}
@@ -462,5 +486,39 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     lineHeight: 18,
+  },
+  streakCard: {
+    padding: 16,
+    borderRadius: 16,
+    borderWidth: 2,
+    marginBottom: 16,
+    gap: 8,
+  },
+  streakContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  streakEmoji: {
+    fontSize: 32,
+  },
+  streakText: {
+    gap: 2,
+  },
+  streakNumber: {
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#F57C00",
+  },
+  streakLabel: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#E65100",
+  },
+  streakMessage: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#E65100",
+    fontStyle: "italic",
   },
 });

@@ -16,7 +16,7 @@ import { getTodayDateString } from "@/lib/timing";
 import * as Haptics from "expo-haptics";
 import { Platform } from "react-native";
 
-type Step = 0 | 1 | 2 | 3 | 4;
+type Step = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 const MOOD_OPTIONS = [
   { emoji: "😴", label: "Tired" },
@@ -34,7 +34,9 @@ export default function MorningJournalScreen() {
   const [step, setStep] = useState<Step>(0);
   const [moodRating, setMoodRating] = useState<number | null>(null);
   const [gratitude, setGratitude] = useState(["", "", ""]);
-  const [intention, setIntention] = useState("");
+  const [betterMoments, setBetterMoments] = useState(["", "", "", "", ""]);
+  const [focus, setFocus] = useState("");
+  const [important, setImportant] = useState("");
   const [practiceIntended, setPracticeIntended] = useState(false);
 
   const { data: practices } = trpc.practices.list.useQuery();
@@ -46,7 +48,7 @@ export default function MorningJournalScreen() {
       utils.journal.getEntry.invalidate();
       utils.journal.listEntries.invalidate();
       if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setStep(4);
+      setStep(6);
     },
     onError: () => {
       Alert.alert("Error", "Could not save your journal. Please try again.");
@@ -62,9 +64,15 @@ export default function MorningJournalScreen() {
     setGratitude(updated);
   };
 
+  const handleBetterMomentsChange = (index: number, value: string) => {
+    const updated = [...betterMoments];
+    updated[index] = value;
+    setBetterMoments(updated);
+  };
+
   const handleNext = () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setStep((prev) => Math.min(4, prev + 1) as Step);
+    setStep((prev) => Math.min(6, prev + 1) as Step);
   };
 
   const handleBack = () => {
@@ -78,6 +86,16 @@ export default function MorningJournalScreen() {
       Alert.alert("Almost there", "Please add at least one thing you're grateful for.");
       return;
     }
+    const filledMoments = betterMoments.filter((m) => m.trim().length > 0);
+    if (filledMoments.length === 0) {
+      Alert.alert("Almost there", "Please add at least one better moment you'd like to create.");
+      return;
+    }
+    if (!important.trim()) {
+      Alert.alert("Almost there", "Please share what's most important to you today.");
+      return;
+    }
+
     saveMorning.mutate({
       date: today,
       weekNum: currentWeek,
@@ -85,16 +103,18 @@ export default function MorningJournalScreen() {
       gratitude1: gratitude[0].trim(),
       gratitude2: gratitude[1].trim(),
       gratitude3: gratitude[2].trim(),
-      focus: intention.trim(),
+      focus: focus.trim(),
+      important: important.trim(),
+      betterMoments: filledMoments.join(" | "),
       practiceIntended,
       completed: true,
     });
   };
 
-  const totalSteps = 4;
+  const totalSteps = 6;
   const progressPct = (step / totalSteps) * 100;
 
-  if (step === 4) {
+  if (step === 6) {
     return (
       <ScreenContainer edges={["top", "left", "right", "bottom"]}>
         <View style={styles.completionContainer}>
@@ -243,36 +263,116 @@ export default function MorningJournalScreen() {
           </View>
         )}
 
-        {/* Step 2: Intention */}
+        {/* Step 2: 5 Better Moments */}
         {step === 2 && (
           <View style={styles.stepContainer}>
             <Text style={[styles.stepTitle, { color: colors.foreground }]}>
-              What is your intention for today?
+              5 Better Moments
             </Text>
             <Text style={[styles.stepSubtitle, { color: colors.muted }]}>
-              How do you want to show up today?
+              What 5 moments would you like to create today? (At least 1 required)
+            </Text>
+            {[0, 1, 2, 3, 4].map((i) => (
+              <TextInput
+                key={i}
+                style={[
+                  styles.textInput,
+                  {
+                    backgroundColor: colors.surface,
+                    borderColor: betterMoments[i].length > 0 ? "#B8A8D8" : colors.border,
+                    color: colors.foreground,
+                  },
+                ]}
+                placeholder={`Better moment ${i + 1}...`}
+                placeholderTextColor={colors.muted}
+                value={betterMoments[i]}
+                onChangeText={(t) => handleBetterMomentsChange(i, t)}
+                returnKeyType="next"
+                maxLength={150}
+              />
+            ))}
+            <Pressable
+              onPress={handleNext}
+              disabled={betterMoments.filter((m) => m.trim()).length === 0}
+              style={({ pressed }) => [
+                styles.nextButton,
+                { backgroundColor: colors.primary },
+                pressed && { opacity: 0.85, transform: [{ scale: 0.97 }] },
+                betterMoments.filter((m) => m.trim()).length === 0 && { opacity: 0.4 },
+              ]}
+            >
+              <Text style={styles.nextButtonText}>Continue →</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {/* Step 3: Most Important Thing */}
+        {step === 3 && (
+          <View style={styles.stepContainer}>
+            <Text style={[styles.stepTitle, { color: colors.foreground }]}>
+              What's most important to you today?
+            </Text>
+            <Text style={[styles.stepSubtitle, { color: colors.muted }]}>
+              Your one priority. What matters most?
             </Text>
             <TextInput
               style={[
-                styles.textInputMulti,
+                styles.textAreaInput,
                 {
                   backgroundColor: colors.surface,
-                  borderColor: intention.length > 0 ? "#E8C87A" : colors.border,
+                  borderColor: important.length > 0 ? "#A5D6A7" : colors.border,
                   color: colors.foreground,
                 },
               ]}
-              placeholder="Today I intend to..."
+              placeholder="What's most important today?"
               placeholderTextColor={colors.muted}
-              value={intention}
-              onChangeText={setIntention}
+              value={important}
+              onChangeText={setImportant}
               multiline
               numberOfLines={4}
-              textAlignVertical="top"
               maxLength={300}
             />
-            <Text style={[styles.charCount, { color: colors.muted }]}>
-              {intention.length}/300
+            <Pressable
+              onPress={handleNext}
+              disabled={!important.trim()}
+              style={({ pressed }) => [
+                styles.nextButton,
+                { backgroundColor: colors.primary },
+                pressed && { opacity: 0.85, transform: [{ scale: 0.97 }] },
+                !important.trim() && { opacity: 0.4 },
+              ]}
+            >
+              <Text style={styles.nextButtonText}>Continue →</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {/* Step 4: Focus */}
+        {step === 4 && (
+          <View style={styles.stepContainer}>
+            <Text style={[styles.stepTitle, { color: colors.foreground }]}>
+              What will you focus on?
             </Text>
+            <Text style={[styles.stepSubtitle, { color: colors.muted }]}>
+              Your intention for today. (Optional)
+            </Text>
+            <TextInput
+              style={[
+                styles.textAreaInput,
+                {
+                  backgroundColor: colors.surface,
+                  borderColor: focus.length > 0 ? "#A8C4D8" : colors.border,
+                  color: colors.foreground,
+                },
+              ]}
+              placeholder="Your intention for today..."
+              placeholderTextColor={colors.muted}
+              value={focus}
+              onChangeText={setFocus}
+              multiline
+              numberOfLines={4}
+              maxLength={300}
+            />
             <Pressable
               onPress={handleNext}
               style={({ pressed }) => [
@@ -286,53 +386,57 @@ export default function MorningJournalScreen() {
           </View>
         )}
 
-        {/* Step 3: Practice */}
-        {step === 3 && (
+        {/* Step 5: Practice Intent */}
+        {step === 5 && (
           <View style={styles.stepContainer}>
             <Text style={[styles.stepTitle, { color: colors.foreground }]}>
-              Your practice for today
+              Will you practice today?
             </Text>
             {currentPractice ? (
-              <View style={[styles.practiceCard, { backgroundColor: "#A8C4D830", borderColor: "#A8C4D8" }]}>
-                <Text style={[styles.practiceLabel, { color: colors.muted }]}>THIS WEEK'S PRACTICE</Text>
-                <Text style={[styles.practiceText, { color: colors.foreground }]}>
-                  "{currentPractice.practiceText}"
-                </Text>
-              </View>
-            ) : null}
-            <Text style={[styles.questionLabel, { color: colors.foreground }]}>
-              Do you intend to do your practice today?
-            </Text>
-            <View style={styles.practiceToggle}>
+              <Text style={[styles.stepSubtitle, { color: colors.muted }]}>
+                This week's practice: "{currentPractice.practiceText}"
+              </Text>
+            ) : (
+              <Text style={[styles.stepSubtitle, { color: colors.muted }]}>
+                Do you intend to practice your chosen practice today?
+              </Text>
+            )}
+            <View style={styles.practiceChoices}>
               <Pressable
-                onPress={() => setPracticeIntended(true)}
+                onPress={() => {
+                  setPracticeIntended(true);
+                  if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
                 style={({ pressed }) => [
-                  styles.toggleButton,
+                  styles.practiceButton,
                   {
-                    backgroundColor: practiceIntended ? "#E8F5E9" : colors.surface,
-                    borderColor: practiceIntended ? "#A5D6A7" : colors.border,
+                    backgroundColor: practiceIntended ? "#B8D5A3" : colors.surface,
+                    borderColor: practiceIntended ? "#7CB342" : colors.border,
                     borderWidth: practiceIntended ? 2 : 1,
                   },
-                  pressed && { opacity: 0.8 },
+                  pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] },
                 ]}
               >
-                <Text style={styles.toggleEmoji}>✅</Text>
-                <Text style={[styles.toggleLabel, { color: colors.foreground }]}>Yes</Text>
+                <Text style={styles.practiceEmoji}>✓</Text>
+                <Text style={[styles.practiceLabel, { color: colors.foreground }]}>Yes, I will</Text>
               </Pressable>
               <Pressable
-                onPress={() => setPracticeIntended(false)}
+                onPress={() => {
+                  setPracticeIntended(false);
+                  if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
                 style={({ pressed }) => [
-                  styles.toggleButton,
+                  styles.practiceButton,
                   {
-                    backgroundColor: !practiceIntended ? "#FFF8F0" : colors.surface,
-                    borderColor: !practiceIntended ? "#E8C87A" : colors.border,
+                    backgroundColor: !practiceIntended ? "#F4C2C2" : colors.surface,
+                    borderColor: !practiceIntended ? "#E57373" : colors.border,
                     borderWidth: !practiceIntended ? 2 : 1,
                   },
-                  pressed && { opacity: 0.8 },
+                  pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] },
                 ]}
               >
-                <Text style={styles.toggleEmoji}>🔄</Text>
-                <Text style={[styles.toggleLabel, { color: colors.foreground }]}>Maybe later</Text>
+                <Text style={styles.practiceEmoji}>—</Text>
+                <Text style={[styles.practiceLabel, { color: colors.foreground }]}>Not today</Text>
               </Pressable>
             </View>
             <Pressable
@@ -340,13 +444,13 @@ export default function MorningJournalScreen() {
               disabled={saveMorning.isPending}
               style={({ pressed }) => [
                 styles.nextButton,
-                { backgroundColor: "#E8C87A" },
+                { backgroundColor: colors.primary },
                 pressed && { opacity: 0.85, transform: [{ scale: 0.97 }] },
                 saveMorning.isPending && { opacity: 0.6 },
               ]}
             >
-              <Text style={[styles.nextButtonText, { color: "#5A4A00" }]}>
-                {saveMorning.isPending ? "Saving..." : "Complete Morning Journal ✓"}
+              <Text style={styles.nextButtonText}>
+                {saveMorning.isPending ? "Saving..." : "Save & Complete"}
               </Text>
             </Pressable>
           </View>
@@ -366,35 +470,77 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   backText: { fontSize: 15, fontWeight: "600" },
-  headerTitle: { fontSize: 16, fontWeight: "700" },
+  headerTitle: { fontSize: 17, fontWeight: "700" },
   stepIndicator: { fontSize: 13, fontWeight: "600" },
-  progressBar: { height: 4, marginHorizontal: 20, borderRadius: 2, overflow: "hidden", marginBottom: 8 },
+  progressBar: { height: 4, marginHorizontal: 20, borderRadius: 2, overflow: "hidden" },
   progressFill: { height: "100%", borderRadius: 2 },
-  scrollContent: { flexGrow: 1, paddingHorizontal: 24, paddingBottom: 40 },
-  stepContainer: { paddingTop: 24, gap: 16 },
-  stepTitle: { fontSize: 24, fontWeight: "700", lineHeight: 32 },
-  stepSubtitle: { fontSize: 15, lineHeight: 22, marginTop: -8 },
-  moodRow: { flexDirection: "row", justifyContent: "space-between", gap: 8 },
-  moodButton: { flex: 1, padding: 12, borderRadius: 14, borderWidth: 1, alignItems: "center", gap: 4 },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
+  stepContainer: {
+    gap: 16,
+  },
+  stepTitle: { fontSize: 22, fontWeight: "700", marginTop: 20 },
+  stepSubtitle: { fontSize: 15, lineHeight: 22 },
+  moodRow: { flexDirection: "row", gap: 8, justifyContent: "space-between" },
+  moodButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: "center",
+    gap: 4,
+  },
   moodEmoji: { fontSize: 24 },
-  moodLabel: { fontSize: 10, fontWeight: "600" },
-  textInput: { borderWidth: 1.5, borderRadius: 14, padding: 14, fontSize: 15, lineHeight: 22 },
-  textInputMulti: { borderWidth: 1.5, borderRadius: 14, padding: 14, fontSize: 15, lineHeight: 22, minHeight: 120 },
-  charCount: { textAlign: "right", fontSize: 11, marginTop: -8 },
-  practiceCard: { padding: 14, borderRadius: 14, borderWidth: 1 },
-  practiceLabel: { fontSize: 10, fontWeight: "700", letterSpacing: 1.5, marginBottom: 6 },
-  practiceText: { fontSize: 15, lineHeight: 22, fontStyle: "italic" },
-  questionLabel: { fontSize: 16, fontWeight: "600" },
-  practiceToggle: { flexDirection: "row", gap: 12 },
-  toggleButton: { flex: 1, padding: 14, borderRadius: 14, borderWidth: 1, alignItems: "center", gap: 6 },
-  toggleEmoji: { fontSize: 24 },
-  toggleLabel: { fontSize: 13, fontWeight: "600" },
-  nextButton: { paddingVertical: 16, borderRadius: 16, alignItems: "center" },
-  nextButtonText: { color: "#fff", fontSize: 17, fontWeight: "700" },
-  completionContainer: { flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 32, gap: 16 },
-  completionEmoji: { fontSize: 64, marginBottom: 8 },
-  completionTitle: { fontSize: 26, fontWeight: "700", textAlign: "center" },
+  moodLabel: { fontSize: 11, fontWeight: "600", textAlign: "center" },
+  textInput: {
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    fontFamily: "System",
+  },
+  textAreaInput: {
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    fontFamily: "System",
+    minHeight: 120,
+    textAlignVertical: "top",
+  },
+  nextButton: {
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 16,
+  },
+  nextButtonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  practiceChoices: { flexDirection: "row", gap: 12 },
+  practiceButton: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: "center",
+    gap: 6,
+  },
+  practiceEmoji: { fontSize: 28 },
+  practiceLabel: { fontSize: 14, fontWeight: "600" },
+  completionContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    gap: 16,
+  },
+  completionEmoji: { fontSize: 64 },
+  completionTitle: { fontSize: 24, fontWeight: "700", textAlign: "center" },
   completionSubtitle: { fontSize: 16, textAlign: "center", lineHeight: 24 },
-  doneButton: { paddingVertical: 16, paddingHorizontal: 40, borderRadius: 16, marginTop: 8 },
-  doneButtonText: { color: "#fff", fontSize: 17, fontWeight: "700" },
+  doneButton: { paddingVertical: 14, borderRadius: 12, alignItems: "center", width: "100%", marginTop: 20 },
+  doneButtonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 });
