@@ -11,6 +11,7 @@ import { useColors } from "@/hooks/use-colors";
 import { trpc } from "@/lib/trpc";
 import { WEEK_COLOR_MAP, WEEK_NAMES } from "@/shared/types";
 import { getJourneyDay, getJourneyProgress } from "@/lib/timing";
+import { getWeeklyFeedback } from "@/lib/weekly-setup";
 
 const QUADRANT_COLORS: Record<string, string> = {
   blue: "#A8C4D8",
@@ -121,6 +122,8 @@ export default function ProgressTab() {
             const isCompleted = w < currentWeek;
             const isCurrent = w === currentWeek;
             const isLocked = w > currentWeek;
+            const weekCompletedDays = weekEntries.filter((e) => e.morningCompleted || e.eveningCompleted).length;
+            const weekFeedback = isCurrent ? getWeeklyFeedback(weekCompletedDays) : null;
 
             return (
               <View
@@ -161,11 +164,40 @@ export default function ProgressTab() {
                 </View>
                 <View style={styles.weekStats}>
                   <Text style={[styles.weekStatText, { color: colors.muted }]}>
-                    {weekEntries.length}d
+                    {weekCompletedDays}/7d
                   </Text>
                   {weekReflection && (
                     <Text style={[styles.weekReflectionDot, { color: colors.success }]}>●</Text>
-                  )}
+                  )}              {weekFeedback && (
+                <View
+                  style={[
+                    styles.feedbackBox,
+                    {
+                      backgroundColor:
+                        weekFeedback.level === "excellent"
+                          ? "#FFF8F0"
+                          : weekFeedback.level === "success"
+                          ? "#E8F5E9"
+                          : weekFeedback.level === "effort"
+                          ? "#FFF3E0"
+                          : "#FCE4EC",
+                      borderColor:
+                        weekFeedback.level === "excellent"
+                          ? "#E8C87A"
+                          : weekFeedback.level === "success"
+                          ? "#A5D6A7"
+                          : weekFeedback.level === "effort"
+                          ? "#FFB74D"
+                          : "#F48FB1",
+                    },
+                  ]}
+                >
+                  <Text style={[styles.feedbackText, { color: colors.foreground }]}>
+                    {weekFeedback.emoji} {weekFeedback.message}
+                  </Text>
+                </View>
+              )}
+
                 </View>
               </View>
             );
@@ -301,6 +333,19 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   weekReflectionDot: {
-    fontSize: 10,
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  feedbackBox: {
+    marginTop: 12,
+    marginHorizontal: 16,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  feedbackText: {
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });

@@ -85,3 +85,34 @@
 - [x] Calculate consecutive days with completed journals
 - [x] Display streak counter on home screen
 - [x] Add streak badge/visual indicator with emoji and message
+
+
+## Phase 12: Progressive Weekly Setup (Weeks 1-4)
+- [x] Build one-question-at-a-time setup flow with Next/Back buttons
+- [x] Week 1: Show only Blue quadrant (mandatory)
+- [x] Week 2: Show Yellow (mandatory) + Blue (optional)
+- [x] Week 3: Show Green (mandatory) + Yellow & Blue (optional)
+- [x] Week 4: Show Red (mandatory) + Green, Yellow & Blue (optional)
+- [x] Add dropdown for practice suggestions if user requests
+- [x] Store weekly practice selections in database
+
+## Phase 13: Flexible Quadrant Selection (Week 5+)
+- [x] Week 5+: Allow any quadrant selection (at least 1 mandatory)
+- [x] Update morning journal to show available quadrants based on week
+- [x] Update evening journal to let users log completed actions
+
+## Phase 14: Weekly Performance Feedback
+- [x] Calculate weekly completion rate (days completed)
+- [x] 5/7 days = "Success" badge
+- [x] 6-7 days = "Excellent Commitment" badge
+- [x] 3-4 days = "Making an Effort" message
+- [x] 1-2 days = "Reconnect with your 28-day goal" prompt
+- [x] Display on Progress tab and Sunday reflection screen
+
+## Phase 15: Celebration Animations
+- [x] Add celebration chime sound on morning journal completion
+- [x] Add confetti animation on morning journal completion
+- [x] Add celebration chime on evening journal completion
+- [x] Add celebration chime on weekly reflection completion
+- [x] Add celebration chime on free-write completion
+- [x] Make animations subtle but noticeable

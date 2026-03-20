@@ -10,9 +10,11 @@ import {
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScreenContainer } from "@/components/screen-container";
+import { Confetti } from "@/components/confetti";
 import { useColors } from "@/hooks/use-colors";
 import { trpc } from "@/lib/trpc";
 import { getTodayDateString } from "@/lib/timing";
+import { triggerCelebration, getCelebrationMessage } from "@/lib/celebrations";
 import * as Haptics from "expo-haptics";
 import { Platform } from "react-native";
 
@@ -38,6 +40,8 @@ export default function MorningJournalScreen() {
   const [focus, setFocus] = useState("");
   const [important, setImportant] = useState("");
   const [practiceIntended, setPracticeIntended] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [celebrationMessage, setCelebrationMessage] = useState("");
 
   const { data: practices } = trpc.practices.list.useQuery();
   const { data: userProfile } = trpc.user.me.useQuery();
@@ -47,8 +51,10 @@ export default function MorningJournalScreen() {
     onSuccess: () => {
       utils.journal.getEntry.invalidate();
       utils.journal.listEntries.invalidate();
-      if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setStep(6);
+      triggerCelebration("success");
+      setCelebrationMessage(getCelebrationMessage("morning"));
+      setShowConfetti(true);
+      setTimeout(() => setStep(6), 500);
     },
     onError: () => {
       Alert.alert("Error", "Could not save your journal. Please try again.");
@@ -117,16 +123,20 @@ export default function MorningJournalScreen() {
   if (step === 6) {
     return (
       <ScreenContainer edges={["top", "left", "right", "bottom"]}>
+        <Confetti isActive={showConfetti} />
         <View style={styles.completionContainer}>
           <Text style={styles.completionEmoji}>☀️</Text>
           <Text style={[styles.completionTitle, { color: colors.foreground }]}>
             Morning journal complete!
           </Text>
           <Text style={[styles.completionSubtitle, { color: colors.muted }]}>
-            You've set a beautiful intention for today.
+            {celebrationMessage}
           </Text>
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => {
+              setShowConfetti(false);
+              router.back();
+            }}
             style={({ pressed }) => [
               styles.doneButton,
               { backgroundColor: colors.primary },
@@ -142,6 +152,7 @@ export default function MorningJournalScreen() {
 
   return (
     <ScreenContainer edges={["top", "left", "right", "bottom"]}>
+      <Confetti isActive={false} />
       {/* Header */}
       <View style={styles.header}>
         <Pressable
