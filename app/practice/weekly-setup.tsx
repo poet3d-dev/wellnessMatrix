@@ -9,6 +9,7 @@ import {
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ScreenContainer } from "@/components/screen-container";
+import { NeurotransmitterCard } from "@/components/neurotransmitter-card";
 import { useColors } from "@/hooks/use-colors";
 import { trpc } from "@/lib/trpc";
 import {
@@ -20,6 +21,7 @@ import {
 } from "@/lib/weekly-setup";
 import * as Haptics from "expo-haptics";
 import { Platform } from "react-native";
+import { WEEK_COLOR_MAP } from "@/shared/types";
 
 export default function WeeklySetupScreen() {
   const router = useRouter();
@@ -179,6 +181,9 @@ export default function WeeklySetupScreen() {
               </View>
             )}
           </View>
+
+          {/* Neurotransmitter science explainer */}
+          <NeurotransmitterCard color={currentQuadrant} showBenefits={false} />
 
           {/* Selection buttons */}
           <View style={styles.buttonGroup}>

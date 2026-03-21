@@ -130,3 +130,13 @@
 - [x] Update design.md with new branding
 - [x] Update tests to validate neurotransmitter names
 - [x] All 23 tests passing, zero TypeScript errors
+
+
+## Phase 17: Neurotransmitter Science Explainer Cards
+- [x] Create neurotransmitter science data with descriptions and mental health benefits
+- [x] Build reusable NeurotransmitterCard component with icon, title, and description
+- [x] Add explainer cards to weekly setup screens (Weeks 1-4)
+- [x] Add explainer cards to home screen practice display
+- [x] Add explainer cards to progress tab week display
+- [x] Test all cards display correctly with proper styling
+- [x] All 23 tests passing, zero TypeScript errors

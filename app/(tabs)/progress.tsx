@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
+import { NeurotransmitterCard } from "@/components/neurotransmitter-card";
 import { useColors } from "@/hooks/use-colors";
 import { trpc } from "@/lib/trpc";
 import { WEEK_COLOR_MAP, WEEK_NAMES } from "@/shared/types";
@@ -126,6 +127,7 @@ export default function ProgressTab() {
             const weekFeedback = isCurrent ? getWeeklyFeedback(weekCompletedDays) : null;
 
             return (
+              <>
               <View
                 key={w}
                 style={[
@@ -168,7 +170,10 @@ export default function ProgressTab() {
                   </Text>
                   {weekReflection && (
                     <Text style={[styles.weekReflectionDot, { color: colors.success }]}>●</Text>
-                  )}              {weekFeedback && (
+                  )}
+                </View>
+              </View>
+              {weekFeedback && (
                 <View
                   style={[
                     styles.feedbackBox,
@@ -197,9 +202,13 @@ export default function ProgressTab() {
                   </Text>
                 </View>
               )}
-
+              {isCurrent && (
+                <View style={{ marginTop: 12 }}>
+                  {/* Neurotransmitter explainer for current week */}
+                  <NeurotransmitterCard color={weekColor} showBenefits={true} />
                 </View>
-              </View>
+              )}
+              </>
             );
           })}
         </View>
@@ -209,6 +218,7 @@ export default function ProgressTab() {
 }
 
 const styles = StyleSheet.create({
+
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 20,

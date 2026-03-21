@@ -9,6 +9,7 @@ import {
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
 import { ScreenContainer } from "@/components/screen-container";
+import { NeurotransmitterCard } from "@/components/neurotransmitter-card";
 import { useColors } from "@/hooks/use-colors";
 import { useAuth } from "@/hooks/use-auth";
 import { trpc } from "@/lib/trpc";
@@ -194,6 +195,11 @@ export default function HomeScreen() {
             </Text>
           </Pressable>
         ) : null}
+
+        {/* Neurotransmitter science card */}
+        {!isPrepWeek && currentPractice && (
+          <NeurotransmitterCard color={weekColor} showBenefits={false} />
+        )}
 
         {/* Sunday practice chooser prompt */}
         {showPracticeChooser && (
