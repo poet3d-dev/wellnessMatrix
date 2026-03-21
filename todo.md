@@ -116,3 +116,17 @@
 - [x] Add celebration chime on weekly reflection completion
 - [x] Add celebration chime on free-write completion
 - [x] Make animations subtle but noticeable
+
+
+## Phase 16: Rebranding to Neuro-wellness Matrix
+- [x] Update app.config.ts with new app name
+- [x] Update theme colors to match neurotransmitter theme
+- [x] Update week color mapping: Serotonin (Blue) → Endorphins (Yellow) → Dopamine (Green) → Oxytocin (Red)
+- [x] Update WEEK_NAMES and WEEK_DESCRIPTIONS in shared/types.ts
+- [x] Update all screen labels and copy to use neurotransmitter names
+- [x] Update Progress tab week display with neurotransmitter names
+- [x] Update weekly setup screen with new neurotransmitter descriptions
+- [x] Update home screen practice display with neurotransmitter context
+- [x] Update design.md with new branding
+- [x] Update tests to validate neurotransmitter names
+- [x] All 23 tests passing, zero TypeScript errors

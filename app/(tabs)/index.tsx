@@ -166,7 +166,7 @@ export default function HomeScreen() {
         {currentPractice ? (
           <View style={[styles.practiceCard, { backgroundColor: accentColor + "20", borderColor: accentColor }]}>
             <Text style={[styles.practiceWeekLabel, { color: colors.muted }]}>
-              WEEK {weekNum} – {WEEK_NAMES[weekColor]?.toUpperCase()}
+              WEEK {weekNum} – {WEEK_NAMES[weekColor]}
             </Text>
             <Text style={[styles.practiceText, { color: colors.foreground }]}>
               "{currentPractice.practiceText}"

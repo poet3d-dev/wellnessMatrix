@@ -15,10 +15,10 @@ describe("Wellness Matrix shared types", () => {
   });
 
   it("should have week names for all 4 colors", () => {
-    expect(WEEK_NAMES.blue).toContain("Connection");
-    expect(WEEK_NAMES.yellow).toContain("Energy");
-    expect(WEEK_NAMES.green).toContain("Growth");
-    expect(WEEK_NAMES.red).toContain("Focus");
+    expect(WEEK_NAMES.blue).toContain("Serotonin");
+    expect(WEEK_NAMES.yellow).toContain("Endorphins");
+    expect(WEEK_NAMES.green).toContain("Dopamine");
+    expect(WEEK_NAMES.red).toContain("Oxytocin");
   });
 
   it("should have practice ideas for all 4 colors", () => {
@@ -41,6 +41,16 @@ describe("Wellness Matrix shared types", () => {
         expect(q.length).toBeGreaterThan(10);
       }
     }
+  });
+});
+
+describe("Weekly setup config", () => {
+  it("should have neurotransmitter-based week titles", async () => {
+    const { getWeeklySetupConfig } = await import("../lib/weekly-setup");
+    expect(getWeeklySetupConfig(1).title).toContain("Serotonin");
+    expect(getWeeklySetupConfig(2).title).toContain("Endorphins");
+    expect(getWeeklySetupConfig(3).title).toContain("Dopamine");
+    expect(getWeeklySetupConfig(4).title).toContain("Oxytocin");
   });
 });
 

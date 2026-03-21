@@ -19,10 +19,10 @@ export const WEEK_COLOR_MAP: Record<number, WeekColor> = {
 };
 
 export const WEEK_NAMES: Record<WeekColor, string> = {
-  blue: "Blue List – Connection & Calm",
-  yellow: "Yellow List – Energy & Joy",
-  green: "Green List – Growth & Nature",
-  red: "Red List – Focus & Achievement",
+  blue: "Serotonin – Stability & Calm",
+  yellow: "Endorphins – Relief & Joy",
+  green: "Dopamine – Direction & Growth",
+  red: "Oxytocin – Connection & Achievement",
 };
 
 export const WEEK_PRACTICE_IDEAS: Record<WeekColor, string[]> = {
@@ -65,14 +65,14 @@ export const REFLECTION_QUESTIONS: Record<number, string[]> = {
     "What did you learn about yourself this week?",
     "Which moments felt most aligned with your vision?",
     "What was your biggest challenge and how did you handle it?",
-    "How did your Blue practice (Connection & Calm) feel?",
+    "How did your Serotonin practice (Stability & Calm) feel?",
     "What would you do differently next week?",
     "What will keep this balanced going forward?",
   ],
   2: [
     "How did your energy and joy shift this week?",
     "What moments brought you the most happiness?",
-    "How did your Yellow practice (Energy & Joy) impact your days?",
+    "How did your Endorphins practice (Relief & Joy) impact your days?",
     "What surprised you about yourself this week?",
     "What are you most proud of from this week?",
     "What will you carry forward into next week?",
@@ -80,14 +80,14 @@ export const REFLECTION_QUESTIONS: Record<number, string[]> = {
   3: [
     "How have you grown this week?",
     "What new insight or skill did you develop?",
-    "How did your Green practice (Growth & Nature) feel?",
+    "How did your Dopamine practice (Direction & Growth) feel?",
     "What connections did you notice between your habits and your vision?",
     "What challenged your growth and what did you learn from it?",
     "How will you build on this growth next week?",
   ],
   4: [
     "What did you achieve and focus on this week?",
-    "How did your Red practice (Focus & Achievement) serve you?",
+    "How did your Oxytocin practice (Connection & Achievement) serve you?",
     "Looking back at your 4-week vision, how close are you?",
     "What habits feel most natural and sustainable now?",
     "What are you most grateful for from these 4 weeks?",
@@ -97,7 +97,7 @@ export const REFLECTION_QUESTIONS: Record<number, string[]> = {
     "What did you learn about yourself this week?",
     "Which moments felt most aligned with your vision?",
     "What was your biggest challenge and how did you handle it?",
-    "How did your Blue practice feel in this second cycle?",
+    "How did your Serotonin practice feel in this second cycle?",
     "What would you do differently next week?",
     "What will keep this balanced going forward?",
   ],

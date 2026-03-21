@@ -2,8 +2,8 @@
 
 ## Brand & Visual Identity
 
-**App Name:** Wellness Matrix  
-**Tagline:** Build your self-care habits, one week at a time.
+**App Name:** Neuro-wellness Matrix  
+**Tagline:** Build your self-care habits by neurotransmitter, one week at a time.
 
 ### Color Palette
 | Token | Value | Usage |
@@ -14,10 +14,10 @@
 | Surface | `#FFFFFF` | Cards, input fields |
 | Border | `#E8E0D8` | Dividers, card borders |
 | Primary | `#A8C4D8` (dusty blue) | CTA buttons, active states |
-| Blue (Week 1) | `#A8C4D8` | Blue quadrant accent |
-| Yellow (Week 2) | `#E8D5A3` | Yellow quadrant accent |
-| Green (Week 3) | `#B8D5A3` | Green quadrant accent |
-| Red (Week 4) | `#F4C2C2` | Red quadrant accent |
+| Blue (Week 1) | `#A8C4D8` | Serotonin – Stability & Calm |
+| Yellow (Week 2) | `#E8D5A3` | Endorphins – Relief & Joy |
+| Green (Week 3) | `#B8D5A3` | Dopamine – Direction & Growth |
+| Red (Week 4) | `#F4C2C2` | Oxytocin – Connection & Achievement |
 | Success | `#6DB87A` | Completion states |
 | Error | `#E07070` | Errors |
 

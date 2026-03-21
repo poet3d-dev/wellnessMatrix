@@ -23,9 +23,9 @@ export function getWeeklySetupConfig(week: number): WeeklySetupConfig {
       availableQuadrants: ["blue"],
       mandatoryQuadrant: "blue",
       optionalQuadrants: [],
-      title: "Week 1: Connection & Calm",
+      title: "Week 1: Serotonin – Stability & Calm",
       description:
-        "Start your journey with practices focused on inner peace and grounding.",
+        "Start your journey with Serotonin practices focused on stability, inner peace, and grounding.",
     };
   }
 
@@ -35,9 +35,9 @@ export function getWeeklySetupConfig(week: number): WeeklySetupConfig {
       availableQuadrants: ["yellow", "blue"],
       mandatoryQuadrant: "yellow",
       optionalQuadrants: ["blue"],
-      title: "Week 2: Energy & Joy",
+      title: "Week 2: Endorphins – Relief & Joy",
       description:
-        "Build on your foundation with energy and joy practices. Blue practices remain optional.",
+        "Build on your foundation with Endorphins practices for relief and joy. Serotonin practices remain optional.",
     };
   }
 
@@ -47,9 +47,9 @@ export function getWeeklySetupConfig(week: number): WeeklySetupConfig {
       availableQuadrants: ["green", "yellow", "blue"],
       mandatoryQuadrant: "green",
       optionalQuadrants: ["yellow", "blue"],
-      title: "Week 3: Growth & Nature",
+      title: "Week 3: Dopamine – Direction & Growth",
       description:
-        "Expand your practice with growth and nature. Previous practices remain optional.",
+        "Expand your practice with Dopamine practices for direction and growth. Previous practices remain optional.",
     };
   }
 
@@ -59,9 +59,9 @@ export function getWeeklySetupConfig(week: number): WeeklySetupConfig {
       availableQuadrants: ["red", "green", "yellow", "blue"],
       mandatoryQuadrant: "red",
       optionalQuadrants: ["green", "yellow", "blue"],
-      title: "Week 4: Focus & Achievement",
+      title: "Week 4: Oxytocin – Connection & Achievement",
       description:
-        "Complete the matrix with focus and achievement. All quadrants are now available.",
+        "Complete the matrix with Oxytocin practices for connection and achievement. All quadrants are now available.",
     };
   }
 
@@ -71,9 +71,9 @@ export function getWeeklySetupConfig(week: number): WeeklySetupConfig {
     availableQuadrants: ["blue", "yellow", "green", "red"],
     mandatoryQuadrant: "blue", // Placeholder - user will choose
     optionalQuadrants: ["yellow", "green", "red"],
-    title: "Choose Your Practice",
+    title: "Choose Your Neurotransmitter Focus",
     description:
-      "Select at least one quadrant for this week. You can choose multiple practices.",
+      "Select at least one neurotransmitter practice for this week. You can choose multiple practices.",
   };
 }
 
@@ -108,10 +108,10 @@ export function getQuadrantEmoji(quadrant: QuadrantColor): string {
  */
 export function getQuadrantLabel(quadrant: QuadrantColor): string {
   const labelMap: Record<QuadrantColor, string> = {
-    blue: "Connection & Calm",
-    yellow: "Energy & Joy",
-    green: "Growth & Nature",
-    red: "Focus & Achievement",
+    blue: "Serotonin – Stability & Calm",
+    yellow: "Endorphins – Relief & Joy",
+    green: "Dopamine – Direction & Growth",
+    red: "Oxytocin – Connection & Achievement",
   };
   return labelMap[quadrant];
 }
