@@ -10,6 +10,7 @@ import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
 import { ScreenContainer } from "@/components/screen-container";
 import { NeurotransmitterCard } from "@/components/neurotransmitter-card";
+import { NeurotransmitterUnlockModal } from "@/components/neurotransmitter-unlock-modal";
 import { useColors } from "@/hooks/use-colors";
 import { useAuth } from "@/hooks/use-auth";
 import { trpc } from "@/lib/trpc";
@@ -26,6 +27,7 @@ import {
   getStreakMessage,
 } from "@/lib/timing";
 import { WEEK_COLOR_MAP, WEEK_NAMES } from "@/shared/types";
+import { checkWeekUnlock } from "@/lib/unlock-detection";
 
 const QUADRANT_COLORS: Record<string, string> = {
   blue: "#A8C4D8",
@@ -58,6 +60,9 @@ export default function HomeScreen() {
   const [morningAvailable, setMorningAvailable] = useState(isMorningAvailable());
   const [eveningAvailable, setEveningAvailable] = useState(isEveningAvailable());
   const [sunday, setSunday] = useState(isSunday());
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [unlockedColor, setUnlockedColor] = useState<string | null>(null);
+  const [shownUnlocks, setShownUnlocks] = useState<Set<number>>(new Set());
 
   // Refresh timing every minute
   useEffect(() => {
@@ -107,6 +112,21 @@ export default function HomeScreen() {
 
   const greeting = getGreeting();
   const firstName = user?.name?.split(" ")[0] ?? "there";
+
+  // Check for week unlocks
+  useEffect(() => {
+    if (!isPrepWeek && weekNum > 0 && !shownUnlocks.has(weekNum)) {
+      const weekEntries = entries?.filter((e) => e.weekNum === weekNum) ?? [];
+      if (checkWeekUnlock(weekNum, weekEntries.map((e) => ({
+        morningCompleted: e.morningCompleted,
+        eveningCompleted: e.eveningCompleted,
+      })))) {
+        setUnlockedColor(weekColor);
+        setShowUnlockModal(true);
+        setShownUnlocks((prev) => new Set([...prev, weekNum]));
+      }
+    }
+  }, [weekNum, entries, isPrepWeek, weekColor, shownUnlocks]);
 
   const accentColor = QUADRANT_COLORS[weekColor] ?? colors.primary;
 
@@ -324,6 +344,15 @@ export default function HomeScreen() {
           </Text>
         </View>
       </ScrollView>
+
+      {/* Neurotransmitter Unlock Modal */}
+      {unlockedColor && (
+        <NeurotransmitterUnlockModal
+          visible={showUnlockModal}
+          neurotransmitterColor={unlockedColor}
+          onClose={() => setShowUnlockModal(false)}
+        />
+      )}
     </ScreenContainer>
   );
 }
