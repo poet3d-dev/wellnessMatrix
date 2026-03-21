@@ -74,6 +74,27 @@ export default function HomeScreen() {
     return () => clearInterval(interval);
   }, []);
 
+  // Check for week unlocks (must be before loading check to maintain hook order)
+  useEffect(() => {
+    if (isLoading) return; // Guard the effect body instead of returning early
+    if (!userProfile || !entries) return;
+    
+    const currentWeek = userProfile.currentWeek ?? 0;
+    if (currentWeek <= 0 || shownUnlocks.has(currentWeek)) return;
+    
+    const weekColor = WEEK_COLOR_MAP[currentWeek] ?? "blue";
+    const weekEntries = entries.filter((e) => e.weekNum === currentWeek);
+    
+    if (checkWeekUnlock(currentWeek, weekEntries.map((e) => ({
+      morningCompleted: e.morningCompleted,
+      eveningCompleted: e.eveningCompleted,
+    })))) {
+      setUnlockedColor(weekColor);
+      setShowUnlockModal(true);
+      setShownUnlocks((prev) => new Set([...prev, currentWeek]));
+    }
+  }, [isLoading, userProfile, entries, shownUnlocks]);
+
   if (isLoading) {
     return (
       <ScreenContainer>
@@ -112,21 +133,6 @@ export default function HomeScreen() {
 
   const greeting = getGreeting();
   const firstName = user?.name?.split(" ")[0] ?? "there";
-
-  // Check for week unlocks
-  useEffect(() => {
-    if (!isPrepWeek && weekNum > 0 && !shownUnlocks.has(weekNum)) {
-      const weekEntries = entries?.filter((e) => e.weekNum === weekNum) ?? [];
-      if (checkWeekUnlock(weekNum, weekEntries.map((e) => ({
-        morningCompleted: e.morningCompleted,
-        eveningCompleted: e.eveningCompleted,
-      })))) {
-        setUnlockedColor(weekColor);
-        setShowUnlockModal(true);
-        setShownUnlocks((prev) => new Set([...prev, weekNum]));
-      }
-    }
-  }, [weekNum, entries, isPrepWeek, weekColor, shownUnlocks]);
 
   const accentColor = QUADRANT_COLORS[weekColor] ?? colors.primary;
 

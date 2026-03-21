@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Modal, Pressable, Animated } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Platform } from "react-native";
@@ -21,8 +21,8 @@ export function NeurotransmitterUnlockModal({
   const info = getNeurotransmitterInfo(neurotransmitterColor);
   const [confettiKey, setConfettiKey] = useState(0);
 
-  const scaleAnim = new Animated.Value(0);
-  const opacityAnim = new Animated.Value(0);
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
