@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build && npx expo export --platform web",
+  "buildCommand": "echo 'Using pre-built dist folder'",
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
