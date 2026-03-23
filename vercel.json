@@ -1,9 +1,8 @@
 {
   "buildCommand": "npm run build && npx expo export --platform web",
   "outputDirectory": "dist",
-  "env": {
-    "NODE_ENV": "production"
-  },
+  "cleanUrls": true,
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*)",
@@ -34,7 +33,7 @@
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "destination": "/index.html"
     }
   ]
